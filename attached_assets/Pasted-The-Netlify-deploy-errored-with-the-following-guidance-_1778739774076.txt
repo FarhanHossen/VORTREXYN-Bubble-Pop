@@ -1,0 +1,127 @@
+The Netlify deploy errored, with the following guidance provided:
+
+Diagnosis
+- The build runs the workspace website build: [line 82](#L82) and invokes Vite: [lines 84–85](#L84-L85).
+- Vite fails to load the config because the config file requires a PORT env var and throws: [line 86](#L86) and the thrown message at [line 88](#L88) shows "Error: PORT environment variable is required but was not provided."
+- Because the config throws during load, the build exits with status 1: [line 99](#L99) and Netlify reports the build failed: [line 120](#L120).
+
+Cause
+- vite.config.ts expects PORT to be defined at config-load time and throws an error when it is missing. That prevents Vite from loading the configuration and aborts the build.
+
+Solution
+You have two practical fixes. Pick one or apply both.
+
+Option A — (Quick) Set PORT in Netlify environment variables
+1. In the Netlify site settings go to Site settings → Build & deploy → Environment → Environment variables.
+2. Add an environment variable named PORT with a value (e.g. 3000 or 5173).
+3. Redeploy.
+
+This supplies PORT during build so vite.config.ts will not throw. (No code changes required.)
+
+Option B — (Recommended) Make vite.config.ts tolerant when PORT is missing
+1. Open artifacts/website/vite.config.ts in the repo:
+   https://github.com/FarhanHossen/VORTREXYN-Bubble-Pop/blob/main/artifacts/website/vite.config.ts
+2. Replace the code that throws when PORT is absent with a safe default or only require PORT during dev. Example change:
+
+```ts
+// artifacts/website/vite.config.ts
+import { defineConfig } from 'vite';
+
+// Safe default: prefer process.env.PORT, then VITE_PORT, then fallback
+const PORT = process.env.PORT ?? process.env.VITE_PORT ?? '5173';
+
+export default defineConfig(({ command }) => {
+  // If you only need PORT during serve (dev), you can conditionally use it:
+  const serverConfig = command === 'serve' ? { port: Number(PORT) } : undefined;
+
+  return {
+    server: serverConfig,
+    // ...other config
+  };
+});
+```
+
+Or, if you want to keep a check only for local development:
+
+```ts
+if (process.env.NODE_ENV === 'development' && !process.env.PORT) {
+  throw new Error('PORT environment variable is required for development.');
+}
+```
+
+3. Commit and push the change, then trigger a new Netlify deploy.
+
+Notes
+- Option B is preferred because it avoids failing builds when Netlify (or CI) doesn't provide PORT for a static build.
+- If you choose Option A, verify that the environment variable was set in the Netlify UI before redeploying.
+- The failure trace showing the thrown error is at [line 88](#L88) and the config load failure at [line 86](#L86).
+
+The relevant error logs are:
+
+Line 0: build-image version: ac6eb13fbf000e5c09ad677efd8b7c3c2d0142b6 (noble-new-builds)
+Line 1: buildbot version: de14d13d022c18f089944497bd804e269fc4f82f
+Line 2: Fetching cached dependencies
+Line 3: Failed to fetch cache, continuing with build
+Line 4: Starting to prepare the repo for build
+Line 5: No cached dependencies found. Cloning fresh repo
+Line 6: git clone --filter=blob:none https://github.com/FarhanHossen/VORTREXYN-Bubble-Pop
+Line 7: Preparing Git Reference refs/heads/main
+Line 8: Custom publish path detected. Proceeding with the specified path: 'dist/public'
+Line 9: Custom build command detected. Proceeding with the specified command: 'pnpm --filter @workspace/website run build'
+Line 10: Installing dependencies
+Line 11: mise ~/.config/mise/config.toml tools: python@3.14.3
+Line 12: mise ~/.config/mise/config.toml tools: ruby@3.4.8
+Line 13: mise ~/.config/mise/config.toml tools: go@1.26.2
+Line 73: ❯ Config file
+Line 74:   /opt/build/repo/artifacts/website/netlify.toml
+Line 75: ​
+Line 76: ❯ Context
+Line 77:   production
+Line 78: ​
+Line 79: build.command from netlify.toml                               
+Line 80: ────────────────────────────────────────────────────────────────
+Line 81: ​
+Line 82: $ pnpm --filter @workspace/website run build
+Line 83: Failed during stage 'building site': Build script returned non-zero exit code: 2
+Line 84: > @workspace/website@0.0.0 build /opt/build/repo/artifacts/website
+Line 85: > vite build --config vite.config.ts
+Line 86: failed to load config from /opt/build/repo/artifacts/website/vite.config.ts
+Line 87: error during build:
+Line 88: Error: PORT environment variable is required but was not provided.
+Line 89:     at file:///opt/build/repo/artifacts/website/node_modules/.vite-temp/vite.config.ts.timestamp-1778739642500-4e479f1cae4f2.mjs
+Line 90:     at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+Line 91:     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+Line 92:     at async loadConfigFromBundledFile (file:///opt/build/repo/node_modules/.pnpm/vite@7.3.2_@types+node@25.3.5_jiti@2.6.1_light
+Line 93:     at async bundleAndLoadConfigFile (file:///opt/build/repo/node_modules/.pnpm/vite@7.3.2_@types+node@25.3.5_jiti@2.6.1_lightni
+Line 94:     at async loadConfigFromFile (file:///opt/build/repo/node_modules/.pnpm/vite@7.3.2_@types+node@25.3.5_jiti@2.6.1_lightningcss
+Line 95:     at async resolveConfig (file:///opt/build/repo/node_modules/.pnpm/vite@7.3.2_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31
+Line 96:     at async createBuilder (file:///opt/build/repo/node_modules/.pnpm/vite@7.3.2_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.31
+Line 97:     at async CAC.<anonymous> (file:///opt/build/repo/node_modules/.pnpm/vite@7.3.2_@types+node@25.3.5_jiti@2.6.1_lightningcss@1.
+Line 98: /opt/build/repo/artifacts/website:
+Line 99:  ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL  @workspace/website@0.0.0 build: `vite build --config vite.config.ts
+Line 100: Exit status 1
+Line 101: ​
+Line 102: "build.command" failed                                        
+Line 103: ────────────────────────────────────────────────────────────────
+Line 104: ​
+Line 105:   Error message
+Line 106:   Command failed with exit code 1: pnpm --filter @workspace/website run build
+Line 107: ​
+Line 108:   Error location
+Line 109:   In build.command from netlify.toml:
+Line 110:   pnpm --filter @workspace/website run build
+Line 111: ​
+Line 112:   Resolved config
+Line 113:   build:
+Line 114:     command: pnpm --filter @workspace/website run build
+Line 115:     commandOrigin: config
+Line 116:     publish: /opt/build/repo/dist/public
+Line 117:     publishOrigin: config
+Line 118:   redirects:
+Line 119:     - from: /*
+      status: 200
+      to: /index.html
+  redirectsOrigin: config
+Line 120: Build failed due to a user error: Build script returned non-zero exit code: 2
+Line 121: Failing build: Failed to build site
+Line 122: Finished processing build request in 24.502s
