@@ -1,6 +1,6 @@
 [build]
   command = "pnpm --filter @workspace/website run build"
-  publish = "dist/public"
+  publish = "artifacts/website/dist/public"
 
 [[redirects]]
   from   = "/*"
