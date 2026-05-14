@@ -1,8 +1,8 @@
 [build]
-  command = "pnpm run build"
-  publish = "dist/public"
+  command = "cd ../.. && pnpm install --frozen-lockfile && pnpm --filter @workspace/website run build"
+  publish = "artifacts/website/dist/public"
 
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from   = "/*"
+  to     = "/index.html"
   status = 200
