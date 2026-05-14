@@ -1,0 +1,185 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: sync-log
+    description: GitHub sync history
+  - name: sync-status
+    description: Current sync status
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /sync-log:
+    post:
+      operationId: createSyncLog
+      tags: [sync-log]
+      summary: Record a sync result
+      description: Persists a single GitHub sync event to the database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSyncLog"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SyncLogEntry"
+    get:
+      operationId: listSyncLogs
+      tags: [sync-log]
+      summary: List recent sync events
+      description: Returns the last N sync log entries ordered newest first
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SyncLogEntry"
+  /sync-status:
+    get:
+      operationId: getSyncStatus
+      tags: [sync-status]
+      summary: Get current sync status
+      description: Returns the status and timestamp of the most recent sync cycle written by the sync loop
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SyncStatus"
+        "404":
+          description: No sync status recorded yet
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    CreateSyncLog:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [pushed, skipped, failed]
+        added_modified:
+          type: integer
+          default: 0
+        deleted:
+          type: integer
+          default: 0
+        reused:
+          type: integer
+          default: 0
+        duration_ms:
+          type: integer
+        commit_sha:
+          type: string
+          nullable: true
+        commit_message:
+          type: string
+          nullable: true
+        repo:
+          type: string
+          nullable: true
+        branch:
+          type: string
+          nullable: true
+        error_message:
+          type: string
+          nullable: true
+      required:
+        - status
+        - duration_ms
+    SyncStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [pushed, skipped, failed]
+        synced_at:
+          type: string
+          format: date-time
+        cycle_duration_s:
+          type: integer
+      required:
+        - status
+        - synced_at
+        - cycle_duration_s
+    SyncLogEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+        status:
+          type: string
+        added_modified:
+          type: integer
+        deleted:
+          type: integer
+        reused:
+          type: integer
+        duration_ms:
+          type: integer
+        commit_sha:
+          type: string
+          nullable: true
+        commit_message:
+          type: string
+          nullable: true
+        repo:
+          type: string
+          nullable: true
+        branch:
+          type: string
+          nullable: true
+        error_message:
+          type: string
+          nullable: true
+        synced_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - status
+        - added_modified
+        - deleted
+        - reused
+        - duration_ms
+        - synced_at

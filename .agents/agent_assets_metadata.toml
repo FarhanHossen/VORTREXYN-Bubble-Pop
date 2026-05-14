@@ -1,0 +1,19 @@
+uploads = []
+
+[[generated]]
+id = "y4ovbaTbPfN5YAY1bAbTV"
+uri = "file://artifacts/mobile/assets/images/icon.png"
+type = "image"
+title = "votrexyn bubble pop icon"
+
+[[outputs]]
+id = "8qHemfa1BsTC4SQYSadFn"
+uri = "file://artifacts/mobile/assets/images/icon.png"
+type = "image"
+title = "VORTREXYN Bubble Pop - App Icon"
+
+[[outputs]]
+id = "DZAJpuhipekB2uJibS-32"
+uri = "file://vortrexyn-bubblepop-netlify.zip"
+type = "unspecified"
+title = "VORTREXYN Bubble Pop — Netlify Deploy Package"

@@ -1,0 +1,33 @@
+{
+  "cli": {
+    "version": ">= 16.0.0",
+    "appVersionSource": "local"
+  },
+  "build": {
+    "production": {
+      "ios": {
+        "resourceClass": "m-medium",
+        "credentialsSource": "local"
+      },
+      "android": {
+        "buildType": "app-bundle",
+        "credentialsSource": "remote"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleTeamId": "253A4YTQ43",
+        "ascAppId": "6764064306",
+        "ascApiKeyIssuerId": "7d5fe0cb-1738-4bc8-b4b8-6c8656afb1b7",
+        "ascApiKeyId": "22LXZ4NZ78",
+        "ascApiKeyPath": "/tmp/apple-cert/asc_key.p8"
+      },
+      "android": {
+        "serviceAccountKeyPath": "/tmp/google-play/service-account.json",
+        "track": "internal"
+      }
+    }
+  }
+}

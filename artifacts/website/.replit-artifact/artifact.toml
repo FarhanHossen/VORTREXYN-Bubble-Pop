@@ -1,0 +1,30 @@
+kind = "web"
+previewPath = "/"
+title = "VORTREXYN Bubble Pop — Website"
+version = "1.0.0"
+id = "artifacts/website"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 8082
+
+[services.env]
+PORT = "8082"
+BASE_PATH = "/"
+
+[services.development]
+run = "pnpm --filter @workspace/website run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/website", "run", "build" ]
+publicDir = "artifacts/website/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"

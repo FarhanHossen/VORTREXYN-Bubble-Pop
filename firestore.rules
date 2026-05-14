@@ -1,0 +1,22 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /scores/{docId} {
+      // Public leaderboard — any authenticated user can read all scores
+      allow read: if request.auth != null;
+
+      // A user can only create/update a score doc that belongs to them
+      allow create: if request.auth != null
+                    && request.resource.data.userId == request.auth.uid;
+
+      allow update: if request.auth != null
+                    && resource.data.userId == request.auth.uid;
+
+      // A user can only delete their own score docs
+      allow delete: if request.auth != null
+                    && resource.data.userId == request.auth.uid;
+    }
+
+  }
+}

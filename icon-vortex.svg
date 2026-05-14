@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024"
+     xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Outer logo glow (cyan) -->
+    <filter id="outerGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="28" result="blur"/>
+      <feColorMatrix in="blur" type="matrix"
+        values="0 0 0 0 0   0 0 0 0 0.898   0 0 0 0 1   0 0 0 0.9 0"
+        result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- V text glow -->
+    <filter id="vGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="25.6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Dot glow -->
+    <filter id="dotGlow" x="-200%" y="-200%" width="500%" height="500%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="12" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Clip to circle -->
+    <clipPath id="circle">
+      <circle cx="512" cy="512" r="511"/>
+    </clipPath>
+  </defs>
+
+  <!-- Dark background (full square — OS clips to rounded square for icon) -->
+  <rect width="1024" height="1024" fill="#01010D"/>
+
+  <!-- Nebula glow behind logo -->
+  <radialGradient id="nebulaGrad" cx="50%" cy="50%" r="50%">
+    <stop offset="0%"   stop-color="#00E5FF" stop-opacity="0.18"/>
+    <stop offset="60%"  stop-color="#7C3AED" stop-opacity="0.10"/>
+    <stop offset="100%" stop-color="#01010D" stop-opacity="0"/>
+  </radialGradient>
+  <circle cx="512" cy="512" r="512" fill="url(#nebulaGrad)"/>
+
+  <!-- Wrapper group with outer glow, clipped to circle -->
+  <g filter="url(#outerGlow)" clip-path="url(#circle)">
+
+    <!-- Dark core -->
+    <circle cx="512" cy="512" r="378.88" fill="#02021A"/>
+
+    <!-- Orbital ellipses -->
+    <!-- Cyan — 0° -->
+    <ellipse cx="512" cy="512" rx="460.8" ry="153.6"
+      fill="none" stroke="#00E5FF" stroke-width="26.624" opacity="0.9"
+      transform="rotate(0,512,512)"/>
+
+    <!-- Purple — 60° -->
+    <ellipse cx="512" cy="512" rx="460.8" ry="153.6"
+      fill="none" stroke="#9B5DE5" stroke-width="26.624" opacity="0.85"
+      transform="rotate(60,512,512)"/>
+
+    <!-- Blue — -60° -->
+    <ellipse cx="512" cy="512" rx="460.8" ry="153.6"
+      fill="none" stroke="#0A84FF" stroke-width="26.624" opacity="0.85"
+      transform="rotate(-60,512,512)"/>
+
+  </g>
+
+  <!-- V text (on top of rings, with glow) -->
+  <text
+    x="512" y="645.12"
+    font-family="Arial Black, Impact, Arial, sans-serif"
+    font-size="450.56"
+    font-weight="900"
+    fill="#00E5FF"
+    text-anchor="middle"
+    letter-spacing="-10"
+    filter="url(#vGlow)"
+  >V</text>
+
+  <!-- Center white dot -->
+  <circle cx="512" cy="568.32" r="51.2"
+    fill="#FFFFFF" filter="url(#dotGlow)"/>
+
+  <!-- Outer ring -->
+  <circle cx="512" cy="512" r="510"
+    fill="none" stroke="#00E5FF" stroke-width="2" opacity="0.28"/>
+</svg>
