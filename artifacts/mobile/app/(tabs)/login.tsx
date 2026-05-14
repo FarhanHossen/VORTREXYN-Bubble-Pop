@@ -313,7 +313,7 @@ export default function LoginScreen() {
         const { user } = await createUserWithEmailAndPassword(auth, trimEmail, password);
         await updateProfile(user, { displayName: trimName });
       }
-      router.replace("/(tabs)/");
+      router.replace("/(tabs)");
     } catch (e: any) { setError(formatError(e.code)); }
     finally { setLoading(false); }
   };
@@ -392,8 +392,7 @@ export default function LoginScreen() {
                       {mode === m && (
                         <LinearGradient
                           colors={["rgba(0,229,255,0.18)", "rgba(124,58,237,0.12)"]}
-                          style={StyleSheet.absoluteFill}
-                          borderRadius={12}
+                          style={[StyleSheet.absoluteFill, { borderRadius: 12 }]}
                           start={{ x: 0, y: 0 }}
                           end={{ x: 1, y: 1 }}
                         />
@@ -407,7 +406,7 @@ export default function LoginScreen() {
               ) : (
                 <View style={styles.forgotHeader}>
                   <TouchableOpacity onPress={() => switchMode("signin")} style={styles.backBtn}>
-                    <LinearGradient colors={["rgba(0,229,255,0.15)", "rgba(0,229,255,0.05)"]} style={StyleSheet.absoluteFill} borderRadius={10} />
+                    <LinearGradient colors={["rgba(0,229,255,0.15)", "rgba(0,229,255,0.05)"]} style={[StyleSheet.absoluteFill, { borderRadius: 10 }]} />
                     <Ionicons name="arrow-back" size={17} color="#00E5FF" />
                   </TouchableOpacity>
                   <Text style={styles.forgotTitle}>RESET PASSWORD</Text>
@@ -513,8 +512,7 @@ export default function LoginScreen() {
               >
                 <LinearGradient
                   colors={["#00BFFF", "#0099EE", "#0066CC"]}
-                  style={StyleSheet.absoluteFill}
-                  borderRadius={16}
+                  style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                 />
@@ -535,7 +533,7 @@ export default function LoginScreen() {
 
               <TouchableOpacity
                 style={styles.guestLink}
-                onPress={() => router.replace({ pathname: "/(tabs)/", params: { guest: "1" } })}
+                onPress={() => router.replace({ pathname: "/(tabs)", params: { guest: "1" } })}
                 activeOpacity={0.7}
               >
                 <Text style={styles.guestLinkText}>Continue as Guest</Text>

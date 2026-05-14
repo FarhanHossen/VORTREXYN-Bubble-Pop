@@ -116,7 +116,14 @@ async function createBlob(content, encoding = 'base64') {
 
 function buildCommitMessage() {
   try {
-    return execSync('git log -1 --pretty=%s', { encoding: 'utf8' }).trim();
+    const msg = execSync('git log -1 --pretty=%s', { encoding: 'utf8' }).trim();
+    const lower = msg.toLowerCase();
+    const replitPhrases = [
+      'replit', 'auto-sync', 'auto sync', 'checkpoint',
+      'add image file to asset', 'attached_assets', 'attached assets',
+    ];
+    const isGenerated = replitPhrases.some(p => lower.includes(p));
+    return isGenerated ? 'Update' : msg;
   } catch {
     return 'Update';
   }

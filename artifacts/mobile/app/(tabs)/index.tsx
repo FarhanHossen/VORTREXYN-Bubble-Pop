@@ -694,8 +694,7 @@ export default function MainMenuScreen() {
             >
               <LinearGradient
                 colors={["#00E5FF", "#0066CC"]}
-                style={StyleSheet.absoluteFill}
-                borderRadius={18}
+                style={[StyleSheet.absoluteFill, { borderRadius: 18 }]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
               />
@@ -710,8 +709,7 @@ export default function MainMenuScreen() {
             >
               <LinearGradient
                 colors={["#7C3AED", "#4C1D95"]}
-                style={StyleSheet.absoluteFill}
-                borderRadius={18}
+                style={[StyleSheet.absoluteFill, { borderRadius: 18 }]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
               />

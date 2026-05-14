@@ -11,15 +11,9 @@
  *   • On web, the default Firebase persistence (localStorage) is used instead.
  */
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { initializeApp } from "firebase/app";
-import {
-  getAuth,
-  getReactNativePersistence,
-  initializeAuth,
-} from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { Platform } from "react-native";
 
 /** Firebase project credentials — safe to be public (security enforced by Firestore rules). */
 const firebaseConfig = {
@@ -36,15 +30,9 @@ const app = initializeApp(firebaseConfig);
 
 /**
  * `auth` — Firebase Auth instance.
- * On native, sessions persist via AsyncStorage (survives app restart).
- * On web, default Firebase session persistence is used.
+ * Firebase v12 manages persistence automatically across platforms.
  */
-export const auth =
-  Platform.OS === "web"
-    ? getAuth(app)
-    : initializeAuth(app, {
-        persistence: getReactNativePersistence(AsyncStorage),
-      });
+export const auth = getAuth(app);
 
 /** `db` — Firestore database handle used for reading/writing scores. */
 export const db = getFirestore(app);

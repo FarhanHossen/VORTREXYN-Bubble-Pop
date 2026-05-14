@@ -151,8 +151,8 @@ function PodiumCard({ item, rank, isMe }: { item: HighScore; rank: number; isMe:
   const ac = avatarColor(item.playerName);
   return (
     <View style={[podStyles.card, { borderColor: mc + "55" }, isMe && podStyles.cardMe]}>
-      <LinearGradient colors={[mc + "18", mc + "06"]} style={StyleSheet.absoluteFill}
-        borderRadius={20} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} />
+      <LinearGradient colors={[mc + "18", mc + "06"]} style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+        start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} />
       <View style={podStyles.shine} />
       <Text style={podStyles.crown}>{CROWN_CHARS[rank]}</Text>
       <View style={[podStyles.avatar, { backgroundColor: ac + "33", borderColor: ac + "88" }]}>
@@ -609,8 +609,8 @@ export default function ScoresScreen() {
           </Text>
           {!isFilterActive(filter) && (
             <TouchableOpacity style={s.playNowBtn} onPress={() => router.replace(user ? "/(tabs)" : { pathname: "/(tabs)" as never, params: { guest: "1" } })} activeOpacity={0.8}>
-              <LinearGradient colors={["#00E5FF", "#0066CC"]} style={StyleSheet.absoluteFill}
-                borderRadius={14} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} />
+              <LinearGradient colors={["#00E5FF", "#0066CC"]} style={[StyleSheet.absoluteFill, { borderRadius: 14 }]}
+                start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} />
               <Text style={s.playNowText}>PLAY NOW</Text>
             </TouchableOpacity>
           )}
