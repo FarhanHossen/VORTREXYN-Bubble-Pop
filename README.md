@@ -151,34 +151,6 @@ VORTREXYN-Bubble-Pop/
 
 ---
 
-## Firebase Setup
-
-The app uses Firebase for authentication and Firestore for leaderboard storage.
-
-**Required Firebase services:**
-- **Authentication** — Email/password sign-in
-- **Firestore** — Score documents and leaderboard queries
-
-**Firestore collection:** `scores`  
-**Document ID format:** `{userId}_{difficulty}_{timeLimit}_{speed}_{maxBubbles}`  
-*(Extreme mode substitutes `X` for `maxBubbles`)*
-
-**Required Firestore security rules:**
-
-```
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /scores/{scoreId} {
-      allow read: if true;
-      allow write: if request.auth != null
-        && request.auth.uid == request.resource.data.userId;
-    }
-  }
-}
-```
-
-
 ---
 
 ## Quick Start
